@@ -12,7 +12,7 @@
 <meta name="author" content="Ben" />
 
 
-<title>Regulare Expressions in R</title>
+<title>Regular Expressions in R</title>
 
 <script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -601,7 +601,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Regulare Expressions in R</h1>
+<h1 class="title toc-ignore">Regular Expressions in R</h1>
 <h4 class="author">Ben</h4>
 <h4 class="date">2/6/2021</h4>
 
@@ -612,32 +612,44 @@ div.tocify {
   addClassKlippyTo("pre.r, pre.sql, pre.bash, pre.python");
   addKlippy('right', 'top', '#0000FF', '1', 'Copy code', 'Code Copied!!!');
 </script>
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(iris))</span></code></pre></div>
-<pre><code>##   Unnamed: 0 Sepal.Length Sepal.Width Petal.Length Petal.Width Species
-## 1          1          5.1         3.5          1.4         0.2  setosa
-## 2          2          4.9         3.0          1.4         0.2  setosa
-## 3          3          4.7         3.2          1.3         0.2  setosa
-## 4          4          4.6         3.1          1.5         0.2  setosa
-## 5          5          5.0         3.6          1.4         0.2  setosa
-## 6          6          5.4         3.9          1.7         0.4  setosa</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cars)</span></code></pre></div>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
+<div id="using-grep-in-r" class="section level3">
+<h3>Using grep in R</h3>
+<p>Here we can locate where a pattern is located utilizing the <code>grep()</code> function.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span>(<span class="at">pattern =</span> <span class="st">&quot;are&quot;</span>,<span class="at">x =</span> <span class="st">&quot;hello how are you doing today&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img src="rexpressions_files/figure-html/pressure-1.png" width="672" /></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+<div id="using-grepl-in-r" class="section level3">
+<h3>Using grepl in R</h3>
+<p>Using <code>grepl()</code> we can check to see if the pattern exists in the text. <code>grepl()</code> returns a logical value either TRUE or FALSE.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grepl</span>(<span class="at">pattern =</span> <span class="st">&quot;are&quot;</span>,<span class="at">x =</span> <span class="fu">c</span>(<span class="st">&quot;are&quot;</span>,<span class="st">&quot;you&quot;</span>,<span class="st">&quot;there&quot;</span>,<span class="st">&quot;are&quot;</span>))</span></code></pre></div>
+<pre><code>## [1]  TRUE FALSE FALSE  TRUE</code></pre>
+</div>
+<div id="using-gsub-in-r" class="section level3">
+<h3>Using gsub in R</h3>
+<p>Using the <code>gsub()</code> function we can substitute words in text. <code>gsub()</code> will replace <strong>all</strong> of the matches in a string.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">&quot;you&quot;</span>,<span class="at">x =</span> <span class="st">&quot;hello how are you doing today and who are you?&quot;</span>,<span class="at">replacement =</span> <span class="st">&quot;they&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;hello how are they doing today and who are they?&quot;</code></pre>
+</div>
+<div id="using-rexexpr-or-gregexpr-in-r" class="section level3">
+<h3>Using rexexpr or gregexpr in R</h3>
+<p>Utilizing <code>regexpr</code> we can find the position of the pattern match as well as the length of the patter match as well. This can come in hand with large text files that are not easily parsed by the human eye.</p>
+<p>We can also utilize <code>gregexpr()</code> as well to do the same thing.</p>
+<p>Both of these functions will retunr the exact same data.</p>
+<pre><code>## [1] 11
+## attr(,&quot;match.length&quot;)
+## [1] 3
+## attr(,&quot;index.type&quot;)
+## [1] &quot;chars&quot;
+## attr(,&quot;useBytes&quot;)
+## [1] TRUE</code></pre>
+<pre><code>## [[1]]
+## [1] 11
+## attr(,&quot;match.length&quot;)
+## [1] 3
+## attr(,&quot;index.type&quot;)
+## [1] &quot;chars&quot;
+## attr(,&quot;useBytes&quot;)
+## [1] TRUE</code></pre>
 </div>
 
 
