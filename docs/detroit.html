@@ -620,8 +620,7 @@ div.tocify {
   addClassKlippyTo("pre.r, pre.sql, pre.bash, pre.python");
   addKlippy('right', 'top', '#0000FF', '1', 'Copy code', 'Code Copied!!!');
 </script>
-<div id="utilizing-data-to-predict-crime-in-detroit" class="section level3">
-<h3>Utilizing data to predict crime in Detroit</h3>
+<p>### Utilizing data to predict crime in Detroit</p>
 <div id="htmlwidget-b712891056bc50dc755f" style="width:100%;height:auto;" class="datatables html-widget"></div>
 <script type="application/json" data-for="htmlwidget-b712891056bc50dc755f">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13"],[260.35,269.8,272.04,272.96,272.51,261.34,268.89,295.99,319.87,341.43,356.59,376.69,390.19],[11,7,5.2,4.3,3.5,3.2,4.1,3.9,3.6,7.1,8.4,7.7,6.3],[455.5,480.2,506.1,535.8,576,601.7,577.3,596.9,613.5,569.3,548.8,563.4,609.3],[178.5,156.41,198.02,222.1,301.92,391.22,665.56,1131.21,837.6,794.9,817.74,583.17,709.59],[215.98,180.48,209.57,231.67,297.65,367.62,616.54,1029.75,786.23,713.77,750.43,1027.38,666.5],[93.4,88.5,94.4,92,91,87.4,88.3,86.1,79,73.9,63.4,62.5,58.9],[558724,538584,519171,500457,482418,465029,448267,432109,416533,401518,387046,373095,359647],[538.1,547.6,562.8,591,626.1,659.8,686.2,699.6,729.9,757.8,755.3,787,819.8],[133.9,137.6,143.6,150.3,164.3,179.5,187.5,195.4,210.3,223.8,227.7,230.9,230.2],[2.98,3.09,3.23,3.33,3.46,3.6,3.73,2.91,4.25,4.47,5.04,5.47,5.76],[117.18,134.02,141.68,147.98,159.85,157.19,155.29,131.75,178.74,178.3,209.54,240.05,258.05],[8.6,8.9,8.52,8.89,13.07,14.57,21.36,28.03,31.49,37.39,46.26,47.24,52.33],[39.17,40.27,45.31,49.51,55.05,53.9,50.62,51.47,49.16,45.8,44.54,41.03,44.17],[306.18,315.16,277.53,234.07,230.84,217.99,286.11,291.59,320.39,323.03,357.38,422.07,473.01]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>FTP<\/th>\n      <th>UEMP<\/th>\n      <th>MAN<\/th>\n      <th>LIC<\/th>\n      <th>GR<\/th>\n      <th>CLEAR<\/th>\n      <th>WM<\/th>\n      <th>NMAN<\/th>\n      <th>GOV<\/th>\n      <th>HE<\/th>\n      <th>WE<\/th>\n      <th>HOM<\/th>\n      <th>ACC<\/th>\n      <th>ASR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11,12,13,14]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>lm_model<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="fu">lm</span>(HOM<span class="sc">~</span>FTP,detroit)</span>
@@ -644,7 +643,6 @@ div.tocify {
 ## Residual standard error: 4.547 on 11 degrees of freedom
 ## Multiple R-squared:  0.9294, Adjusted R-squared:  0.923 
 ## F-statistic: 144.8 on 1 and 11 DF,  p-value: 1.129e-07</code></pre>
-</div>
 
 
 
