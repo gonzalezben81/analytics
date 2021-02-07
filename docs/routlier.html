@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Ben Gonzalez" />
+
+<meta name="date" content="2019-11-21" />
+
+<title>Routlier Package: Finding outliers in your data</title>
+
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="site_libs/jquery-3.5.1/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<script src="site_libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.17/datatables.js"></script>
+<link href="site_libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="site_libs/jszip-1.10.20/jszip.min.js"></script>
+<script src="site_libs/pdfmake-1.10.20/pdfmake.js"></script>
+<script src="site_libs/pdfmake-1.10.20/vfs_fonts.js"></script>
+<link href="site_libs/dt-ext-buttons-1.10.20/css/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="site_libs/dt-ext-buttons-1.10.20/js/dataTables.buttons.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.10.20/js/buttons.flash.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.10.20/js/buttons.html5.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.10.20/js/buttons.colVis.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.10.20/js/buttons.print.min.js"></script>
+<link href="site_libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.1.1/js/crosstalk.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Gonzalez Analytics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fas fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fab fa-r-project"></span>
+     
+    RTutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="rexpressions.html">Regular Expressions in R</a>
+    </li>
+    <li>
+      <a href="functions.html">
+        <span class="far fa-file-code"></span>
+         
+        Functions in R
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fas fa-graduation-cap"></span>
+     
+    Graduate Work
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="detroit.html">Detroit Crime</a>
+    </li>
+    <li>
+      <a href="student.html">Student Performance</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fas fa-database"></span>
+     
+    Query Language
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="postgresqlr.html">
+        <span class="fas fa-database"></span>
+         
+        PostgreSQL in R
+      </a>
+    </li>
+    <li>
+      <a href="mongor.html">
+        <span class="fab fa-envira"></span>
+         
+        MongoDB in R
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fab fa-python"></span>
+     
+    Python
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="pythonr.html">
+        <span class="fab fa-r-project"></span>
+         
+        Python &amp; R
+      </a>
+    </li>
+    <li>
+      <a href="mongopython.html">
+        <span class="fab fa-envira"></span>
+         
+        MongoDB in Python
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fab fa-docker"></span>
+     
+    Docker
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="dockerfileaws.html">
+        <span class="fab fa-aws"></span>
+         
+        Dockerfile AWS
+      </a>
+    </li>
+    <li>
+      <a href="dockershiny.html">
+        <span class="fab fa-r-project"></span>
+         
+        Dockerized R-Shiny App
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fas fa-box-open"></span>
+     
+    R Packages
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="facebookr.html">Facebook R package</a>
+    </li>
+    <li>
+      <a href="routlier.html">Routlier Package</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="about.html">
+    <span class="fas fa-info"></span>
+     
+    About
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Routlier Package: Finding outliers in your data</h1>
+<h4 class="author">Ben Gonzalez</h4>
+<h4 class="date">11/21/2019</h4>
+
+</div>
+
+
+<script>
+  addClassKlippyTo("pre.r, pre.sql, pre.bash, pre.python");
+  addKlippy('right', 'top', '#0000FF', '1', 'Copy code', 'Code Copied!!!');
+</script>
+<div id="routlier" class="section level3">
+<h3>routlier</h3>
+<p>routlier is a package that is built to look for outliers in a dataset. The functions allow a user to look for outliers that are ‘x’ number of deviations away from the mean in the data for a particular column. The number of ‘Outliers’ in a dataset will be returned. Additionally any Outlier value will now be replaced with the word ‘Outlier’ in the dataset.</p>
+<p>There is also a function routlier_mad() that utilizes the MAD median absolute deviation approach to look for Outliers. The MAD approach is less susceptible to extreme outliers than the traditional Median &amp; SD approach. See the following thesis for further explination. <a href="http://d-scholarship.pitt.edu/7948/1/Seo.pdf">Thesis</a></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(routlier)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;routlier&#39;</code></pre>
+<pre><code>## The following object is masked _by_ &#39;.GlobalEnv&#39;:
+## 
+##     detroit</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>routlier<span class="sc">::</span><span class="fu">routlier_simple</span>(<span class="at">data =</span> detroit,<span class="at">sd =</span> <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>## You have  72  outliers in your dataset</code></pre>
+<pre><code>##    Unnamed: 0     FTP    UEMP     MAN     LIC      GR   CLEAR      WM    NMAN
+## 1     Outlier  260.35 Outlier Outlier Outlier Outlier    93.4 Outlier Outlier
+## 2     Outlier   269.8       7 Outlier Outlier Outlier    88.5 Outlier Outlier
+## 3     Outlier  272.04     5.2 Outlier Outlier Outlier Outlier Outlier Outlier
+## 4           4  272.96     4.3   535.8   222.1 Outlier      92  500457     591
+## 5           5  272.51     3.5     576  301.92  297.65      91  482418   626.1
+## 6           6  261.34 Outlier   601.7  391.22  367.62    87.4  465029   659.8
+## 7           7  268.89     4.1   577.3  665.56  616.54    88.3  448267   686.2
+## 8           8  295.99     3.9   596.9 Outlier Outlier    86.1  432109   699.6
+## 9           9  319.87     3.6 Outlier   837.6  786.23      79  416533   729.9
+## 10         10  341.43     7.1   569.3   794.9  713.77    73.9  401518   757.8
+## 11    Outlier Outlier Outlier   548.8  817.74  750.43 Outlier Outlier   755.3
+## 12    Outlier Outlier     7.7   563.4  583.17 Outlier Outlier Outlier Outlier
+## 13    Outlier Outlier     6.3 Outlier  709.59   666.5 Outlier Outlier Outlier
+##        GOV      HE      WE     HOM     ACC     ASR
+## 1  Outlier Outlier Outlier Outlier Outlier  306.18
+## 2  Outlier    3.09  134.02     8.9 Outlier  315.16
+## 3  Outlier    3.23  141.68 Outlier   45.31  277.53
+## 4    150.3    3.33  147.98    8.89   49.51 Outlier
+## 5    164.3    3.46  159.85   13.07 Outlier Outlier
+## 6    179.5     3.6  157.19   14.57 Outlier Outlier
+## 7    187.5    3.73  155.29   21.36   50.62  286.11
+## 8    195.4 Outlier  131.75   28.03   51.47  291.59
+## 9    210.3    4.25  178.74   31.49   49.16  320.39
+## 10 Outlier    4.47   178.3   37.39    45.8  323.03
+## 11 Outlier Outlier  209.54 Outlier   44.54  357.38
+## 12 Outlier Outlier Outlier Outlier Outlier Outlier
+## 13 Outlier Outlier Outlier Outlier   44.17 Outlier</code></pre>
+</div>
+<div id="routlier-example-with-both-quantitative-and-qualitative-data" class="section level3">
+<h3>routlier:: Example with both quantitative and qualitative data</h3>
+<p>Here we will utilize the student dataset that is included in the <strong>routlier</strong> package. This dataset has both quantitative and qualitative data in it. You can see we have <strong>274 outliers</strong> when we set the <strong>sd</strong> argument equal to <strong>2</strong>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>simple <span class="ot">&lt;-</span> <span class="fu">routlier_simple</span>(<span class="at">data =</span> detroit,<span class="at">sd =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="figure">
+<img src="man/figures/routlier_simple_markers.png" alt="" />
+<p class="caption">routlier_simple: Detroit Data Set</p>
+</div>
+<p><br/></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">routlier_simple</span>(<span class="at">data =</span> student,<span class="at">sd =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="figure">
+<img src="man/figures/student_rh_tail.png" alt="" />
+<p class="caption">routlier_simple: Student Data Set - Tail End</p>
+</div>
+<hr />
+</div>
+<div id="routlier-using-routlier_dt_sd" class="section level3">
+<h3>routlier:: Using routlier_dt_sd()</h3>
+<ul>
+<li>we can find the <strong>Outliers</strong> in a data set and have them highlighted with a green background to make them easier to find. Here we have an interactive DT::table that gets returned. This allows us to filter and sort out data much more easily.</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">routlier_dt_sd</span>(<span class="at">data =</span> detroit,<span class="at">sd =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## You have  4  outliers in your dataset</code></pre>
+<div id="htmlwidget-542cca0f407c2da4f3ae" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-542cca0f407c2da4f3ae">{"x":{"filter":"none","extensions":["Buttons"],"editable":{"target":"cell","disable":{"columns":null}},"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13"],["1","2","3","4","5","6","7","8","9","10","11","12","13"],["260.35","269.8","272.04","272.96","272.51","261.34","268.89","295.99","319.87","341.43","356.59","376.69","390.19"],["Outlier","7","5.2","4.3","3.5","3.2","4.1","3.9","3.6","7.1","8.4","7.7","6.3"],["Outlier","480.2","506.1","535.8","576","601.7","577.3","596.9","613.5","569.3","548.8","563.4","609.3"],["178.5","156.41","198.02","222.1","301.92","391.22","665.56","1131.21","837.6","794.9","817.74","583.17","709.59"],["215.98","180.48","209.57","231.67","297.65","367.62","616.54","1029.75","786.23","713.77","750.43","1027.38","666.5"],["93.4","88.5","94.4","92","91","87.4","88.3","86.1","79","73.9","63.4","62.5","58.9"],["558724","538584","519171","500457","482418","465029","448267","432109","416533","401518","387046","373095","359647"],["538.1","547.6","562.8","591","626.1","659.8","686.2","699.6","729.9","757.8","755.3","787","819.8"],["133.9","137.6","143.6","150.3","164.3","179.5","187.5","195.4","210.3","223.8","227.7","230.9","230.2"],["2.98","3.09","3.23","3.33","3.46","3.6","3.73","2.91","4.25","4.47","5.04","5.47","5.76"],["117.18","134.02","141.68","147.98","159.85","157.19","155.29","131.75","178.74","178.3","209.54","240.05","Outlier"],["8.6","8.9","8.52","8.89","13.07","14.57","21.36","28.03","31.49","37.39","46.26","47.24","52.33"],["39.17","40.27","45.31","49.51","55.05","53.9","50.62","51.47","49.16","45.8","44.54","41.03","44.17"],["306.18","315.16","277.53","234.07","230.84","217.99","286.11","291.59","320.39","323.03","357.38","422.07","Outlier"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Unnamed: 0<\/th>\n      <th>FTP<\/th>\n      <th>UEMP<\/th>\n      <th>MAN<\/th>\n      <th>LIC<\/th>\n      <th>GR<\/th>\n      <th>CLEAR<\/th>\n      <th>WM<\/th>\n      <th>NMAN<\/th>\n      <th>GOV<\/th>\n      <th>HE<\/th>\n      <th>WE<\/th>\n      <th>HOM<\/th>\n      <th>ACC<\/th>\n      <th>ASR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"initComplete":"function(settings, json) {\n$(this.api().table().header()).css({'background-color': 'lightblue', 'color': 'black'});\n}","pageLength":10,"lengthMenu":[5,10,15,20,25,30,35,40,45,50],"dom":"lBftrip","keys":true,"buttons":["copy","csv","excel","pdf","print"],"extend":"excel","filename":"outlier.xls","order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}],"rowCallback":"function(row, data) {\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[4]; $(this.api().cell(row, 4).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[5]; $(this.api().cell(row, 5).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[6]; $(this.api().cell(row, 6).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[7]; $(this.api().cell(row, 7).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[8]; $(this.api().cell(row, 8).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[9]; $(this.api().cell(row, 9).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[10]; $(this.api().cell(row, 10).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[11]; $(this.api().cell(row, 11).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[12]; $(this.api().cell(row, 12).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[13]; $(this.api().cell(row, 13).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[14]; $(this.api().cell(row, 14).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\nvar value=data[15]; $(this.api().cell(row, 15).node()).css({'background':value == \"0\" ? \"white\" : value == \"Outlier\" ? \"lightgreen\" : null});\n}"}},"evals":["options.initComplete","options.rowCallback"],"jsHooks":[]}</script>
+<!-- ![routlier_mad](./man/figures/routlier_dt_sd.png) -->
+</div>
+<div id="routlier-using-routlier_rh_sd" class="section level3">
+<h3>routlier:: Using routlier_rh_sd()</h3>
+<ul>
+<li>we can find the <strong>Outliers</strong> in a data set and have them highlighted with a green background to make them easier to find.</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">routlier_rh_sd</span>(<span class="at">data =</span> iris,<span class="at">sd =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="figure">
+<img src="man/figures/routlier_rh.png" alt="" />
+<p class="caption">routlier_mad</p>
+</div>
+</div>
+<div id="routlier-using-routlier_formattable" class="section level3">
+<h3>routlier:: Using routlier_formattable()</h3>
+<ul>
+<li>We can find the <strong>Outliers</strong> in a data set and have the <strong>Outliers</strong> highlighted in red and the non-outlier values highlighted in green.</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">routlier_formattable</span>(<span class="at">data =</span> detroit,<span class="at">sd =</span> <span class="dv">2</span>)</span></code></pre></div>
+</div>
+<div id="routlier-using-routlier_mad" class="section level3">
+<h3>routlier:: Using routlier_mad()</h3>
+<ul>
+<li>We can find the <strong>Outliers</strong> in a data set and have the <strong>Outliers</strong> highlighted in red and the non-outlier values highlighted in green. The print out also tells us how many <strong>Outliers</strong> are present in the data.</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">routlier_mad</span>(<span class="at">data =</span> mtcars,<span class="at">MAD =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;The MAD for column 1 is from: 30.02298 : 8.37702 and the overall MAD range is: 21.64596&quot;
+## [1] &quot;The MAD for column 2 is from: 11.9304 : 0.0696000000000003 and the overall MAD range is: 11.8608&quot;
+## [1] &quot;The MAD for column 3 is from: 477.2527 : -84.6527 and the overall MAD range is: 561.9054&quot;
+## [1] &quot;The MAD for column 4 is from: 277.1904 : -31.1904 and the overall MAD range is: 308.3808&quot;
+## [1] &quot;The MAD for column 5 is from: 5.10347 : 2.28653 and the overall MAD range is: 2.81694&quot;
+## [1] &quot;The MAD for column 6 is from: 4.859491 : 1.790509 and the overall MAD range is: 3.068982&quot;
+## [1] &quot;The MAD for column 7 is from: 20.541766 : 14.878234 and the overall MAD range is: 5.663532&quot;
+## [1] &quot;The MAD for column 8 is from: 0 : 0 and the overall MAD range is: 0&quot;
+## [1] &quot;The MAD for column 9 is from: 0 : 0 and the overall MAD range is: 0&quot;
+## [1] &quot;The MAD for column 10 is from: 6.9652 : 1.0348 and the overall MAD range is: 5.9304&quot;
+## [1] &quot;The MAD for column 11 is from: 4.9652 : -0.9652 and the overall MAD range is: 5.9304&quot;
+## [1] &quot;You have a total of 15 Outliers in your dataset&quot;</code></pre>
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+mpg
+</th>
+<th style="text-align:right;">
+cyl
+</th>
+<th style="text-align:right;">
+disp
+</th>
+<th style="text-align:right;">
+hp
+</th>
+<th style="text-align:right;">
+drat
+</th>
+<th style="text-align:right;">
+wt
+</th>
+<th style="text-align:right;">
+qsec
+</th>
+<th style="text-align:right;">
+vs
+</th>
+<th style="text-align:right;">
+am
+</th>
+<th style="text-align:right;">
+gear
+</th>
+<th style="text-align:right;">
+carb
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Mazda RX4
+</td>
+<td style="text-align:right;">
+<span style="color: green">21.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">6</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">160.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">110</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.90</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2.620</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">16.46</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mazda RX4 Wag
+</td>
+<td style="text-align:right;">
+<span style="color: green">21.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">6</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">160.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">110</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.90</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2.875</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">17.02</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Datsun 710
+</td>
+<td style="text-align:right;">
+<span style="color: green">22.8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">108.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">93</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.85</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2.320</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">18.61</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hornet 4 Drive
+</td>
+<td style="text-align:right;">
+<span style="color: green">21.4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">6</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">258.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">110</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.08</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.215</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">19.44</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hornet Sportabout
+</td>
+<td style="text-align:right;">
+<span style="color: green">18.7</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">360.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">175</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.15</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.440</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">17.02</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Valiant
+</td>
+<td style="text-align:right;">
+<span style="color: green">18.1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">6</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">225.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">105</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2.76</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.460</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">20.22</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Duster 360
+</td>
+<td style="text-align:right;">
+<span style="color: green">14.3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">360.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">245</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.21</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.570</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">15.84</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Merc 240D
+</td>
+<td style="text-align:right;">
+<span style="color: green">24.4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">146.7</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">62</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.69</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.190</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">20.00</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Merc 230
+</td>
+<td style="text-align:right;">
+<span style="color: green">22.8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">140.8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">95</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.92</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.150</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">22.90</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Merc 280
+</td>
+<td style="text-align:right;">
+<span style="color: green">19.2</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">6</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">167.6</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">123</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.92</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.440</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">18.30</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Merc 280C
+</td>
+<td style="text-align:right;">
+<span style="color: green">17.8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">6</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">167.6</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">123</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.92</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.440</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">18.90</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Merc 450SE
+</td>
+<td style="text-align:right;">
+<span style="color: green">16.4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">275.8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">180</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.07</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4.070</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">17.40</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Merc 450SL
+</td>
+<td style="text-align:right;">
+<span style="color: green">17.3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">275.8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">180</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.07</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.730</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">17.60</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Merc 450SLC
+</td>
+<td style="text-align:right;">
+<span style="color: green">15.2</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">275.8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">180</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.07</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.780</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">18.00</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cadillac Fleetwood
+</td>
+<td style="text-align:right;">
+<span style="color: green">10.4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">472.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">205</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2.93</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">5.250</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">17.98</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lincoln Continental
+</td>
+<td style="text-align:right;">
+<span style="color: green">10.4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">460.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">215</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.00</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">5.424</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">17.82</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chrysler Imperial
+</td>
+<td style="text-align:right;">
+<span style="color: green">14.7</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">440.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">230</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.23</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">5.345</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">17.42</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Fiat 128
+</td>
+<td style="text-align:right;">
+<span style="color: red">32.4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">78.7</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">66</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4.08</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2.200</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">19.47</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Honda Civic
+</td>
+<td style="text-align:right;">
+<span style="color: red">30.4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">75.7</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">52</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4.93</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">1.615</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">18.52</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Toyota Corolla
+</td>
+<td style="text-align:right;">
+<span style="color: red">33.9</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">71.1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">65</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4.22</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1.835</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">19.90</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Toyota Corona
+</td>
+<td style="text-align:right;">
+<span style="color: green">21.5</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">120.1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">97</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.70</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2.465</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">20.01</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dodge Challenger
+</td>
+<td style="text-align:right;">
+<span style="color: green">15.5</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">318.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">150</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2.76</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.520</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">16.87</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AMC Javelin
+</td>
+<td style="text-align:right;">
+<span style="color: green">15.2</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">304.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">150</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.15</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.435</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">17.30</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Camaro Z28
+</td>
+<td style="text-align:right;">
+<span style="color: green">13.3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">350.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">245</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.73</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.840</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">15.41</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pontiac Firebird
+</td>
+<td style="text-align:right;">
+<span style="color: green">19.2</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">400.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">175</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.08</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.845</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">17.05</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Fiat X1-9
+</td>
+<td style="text-align:right;">
+<span style="color: green">27.3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">79.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">66</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4.08</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1.935</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">18.90</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Porsche 914-2
+</td>
+<td style="text-align:right;">
+<span style="color: green">26.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">120.3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">91</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4.43</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2.140</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">16.70</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">5</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lotus Europa
+</td>
+<td style="text-align:right;">
+<span style="color: red">30.4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">95.1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">113</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.77</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">1.513</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">16.90</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">5</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ford Pantera L
+</td>
+<td style="text-align:right;">
+<span style="color: green">15.8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">351.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">264</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4.22</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.170</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">14.50</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">5</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ferrari Dino
+</td>
+<td style="text-align:right;">
+<span style="color: green">19.7</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">6</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">145.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">175</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.62</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2.770</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">15.50</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">5</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">6</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Maserati Bora
+</td>
+<td style="text-align:right;">
+<span style="color: green">15.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">301.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">335</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.54</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">3.570</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">14.60</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">5</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red">8</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Volvo 142E
+</td>
+<td style="text-align:right;">
+<span style="color: green">21.4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">121.0</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">109</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4.11</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2.780</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">18.60</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">4</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">2</span>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- ![routlier_mad](./man/figures/routlier_mad_two.png) -->
+<!-- ![routlier_mad](./man/figures/routlier_mad.png) -->
+</div>
+<div id="preloaded-datasets-in-the-routlier-package" class="section level3">
+<h3>Preloaded Datasets in the routlier package:</h3>
+</div>
+<div id="homicide-in-detroit-the-role-of-firearms." class="section level3">
+<h3>Homicide in Detroit: The role of Firearms.</h3>
+<ul>
+<li>This is the data set called ‘DETROIT’ in the book ‘Subset selection in regression’ by Alan J. Miller published in the Chapman &amp; Hall series of monographs on Statistics &amp; Applied Probability, no. 40. The data are unusual in that a subset of three predictors can be found which gives a very much better fit to the data than the subsets found from the Efroymson stepwise algorithm, or from forward selection or backward elimination. The original data were given in appendix A of `Regression analysis and its application: A data-oriented approach’ by Gunst &amp; Mason, Statistics textbooks and monographs no. 24, Marcel Dekker. It has caused problems because some copies of the Gunst &amp; Mason book do not contain all of the data, and because Miller does not say which variables he used as predictors and which is the dependent variable. (HOM was the dependent variable, and the predictors were FTP … WE)</li>
+</ul>
+<p>A data frame with 13 rows and 14 variables:</p>
+<ul>
+<li>Detroit Dataset:
+<ul>
+<li>FTP: Full-time police per 100,000 population</li>
+<li>UEMP: UEMP - % unemployed in the population</li>
+<li>MAN: MAN - number of manufacturing workers in thousands</li>
+<li>LIC: LIC - Number of handgun licences per 100,000 population</li>
+<li>GR: GR - Number of handgun registrations per 100,000 population</li>
+<li>CLEAR: CLEAR - % homicides cleared by arrests</li>
+<li>WM: WM - Number of white males in the population</li>
+<li>NMAN: NMAN - Number of non-manufacturing workers in thousands</li>
+<li>GOV: GOV - Number of government workers in thousands</li>
+<li>HE: HE - Average hourly earnings</li>
+<li>WE: WE - Average weekly earnings:</li>
+<li>HOM: HOM - Number of homicides per 100,000 of population</li>
+<li>ACC: ACC - Death rate in accidents per 100,000 population</li>
+<li>ASR: ASR - Number of assaults per 100,000 population</li>
+</ul></li>
+</ul>
+<p><a href="http://lib.stat.cmu.edu/datasets/detroit">Detroit Dataset</a></p>
+</div>
+<div id="student-performance-dataset" class="section level3">
+<h3>Student Performance Dataset:</h3>
+<p>Student Performance Data Set:</p>
+<ul>
+<li>This data approach student achievement in secondary education of two Portuguese schools. The data attributes include student grades, demographic, social and school related features) and it was collected by using school reports and questionnaires. Two datasets are provided regarding the performance in two distinct subjects: Mathematics (mat) and Portuguese language (por). In [Cortez and Silva, 2008], the two datasets were modeled under binary/five-level classification and regression tasks. Important note: the target attribute G3 has a strong correlation with attributes G2 and G1. This occurs because G3 is the final year grade (issued at the 3rd period), while G1 and G2 correspond to the 1st and 2nd period grades. It is more difficult to predict G3 without G2 and G1, but such prediction is much more useful (see paper source for more details)</li>
+</ul>
+<p>A data frame with 392 rows and 33 variables: <br/></p>
+<p>Attributes for both student-mat.csv (Math course) and student-por.csv (Portuguese language course) datasets:</p>
+<ul>
+<li>Student Performance Data Set:
+<ul>
+<li>school - student’s school (binary: ‘GP’ - Gabriel Pereira or ‘MS’ - Mousinho da Silveira)</li>
+<li>sex - student’s sex (binary: ‘F’ - female or ‘M’ - male)</li>
+<li>age - student’s age (numeric: from 15 to 22)</li>
+<li>address - student’s home address type (binary: ‘U’ - urban or ‘R’ - rural)</li>
+<li>famsize - family size (binary: ‘LE3’ - less or equal to 3 or ‘GT3’ - greater than 3)</li>
+<li>Pstatus - parent’s cohabitation status (binary: ‘T’ - living together or ‘A’ - apart)</li>
+<li>Medu - mother’s education (numeric: 0 - none, 1 - primary education (4th grade), 2 â€“ 5th to 9th grade, 3 â€“ secondary education or 4 â€“ higher education)</li>
+<li>Fedu - father’s education (numeric: 0 - none, 1 - primary education (4th grade), 2 â€“ 5th to 9th grade, 3 â€“ secondary education or 4 â€“ higher education)</li>
+<li>Mjob - mother’s job (nominal: ‘teacher’, ‘health’ care related, civil ‘services’ (e.g. administrative or police), ‘at_home’ or ‘other’)</li>
+<li>Fjob - father’s job (nominal: ‘teacher’, ‘health’ care related, civil ‘services’ (e.g. administrative or police), ‘at_home’ or ‘other’)</li>
+<li>reason - reason to choose this school (nominal: close to ‘home’, school ‘reputation’, ‘course’ preference or ‘other’)</li>
+<li>guardian - student’s guardian (nominal: ‘mother’, ‘father’ or ‘other’)</li>
+<li>traveltime - home to school travel time (numeric: 1 - &lt;15 min., 2 - 15 to 30 min., 3 - 30 min. to 1 hour, or 4 - &gt;1 hour)</li>
+<li>studytime - weekly study time (numeric: 1 - &lt;2 hours, 2 - 2 to 5 hours, 3 - 5 to 10 hours, or 4 - &gt;10 hours)</li>
+<li>failures - number of past class failures (numeric: n if 1&lt;=n&lt;3, else 4)</li>
+<li>schoolsup - extra educational support (binary: yes or no)</li>
+<li>famsup - family educational support (binary: yes or no)</li>
+<li>paid - extra paid classes within the course subject (Math or Portuguese) (binary: yes or no)</li>
+<li>activities - extra-curricular activities (binary: yes or no)</li>
+<li>nursery - attended nursery school (binary: yes or no)</li>
+<li>higher - wants to take higher education (binary: yes or no)</li>
+<li>internet - Internet access at home (binary: yes or no)</li>
+<li>romantic - with a romantic relationship (binary: yes or no)</li>
+<li>famrel - quality of family relationships (numeric: from 1 - very bad to 5 - excellent)</li>
+<li>freetime - free time after school (numeric: from 1 - very low to 5 - very high)</li>
+<li>goout - going out with friends (numeric: from 1 - very low to 5 - very high)</li>
+<li>Dalc - workday alcohol consumption (numeric: from 1 - very low to 5 - very high)</li>
+<li>Walc - weekend alcohol consumption (numeric: from 1 - very low to 5 - very high)</li>
+<li>health - current health status (numeric: from 1 - very bad to 5 - very good)</li>
+<li>absences - number of school absences (numeric: from 0 to 93)</li>
+</ul></li>
+</ul>
+<p><br/></p>
+<ul>
+<li>These grades are related with the course subject, Math or Portuguese
+<ul>
+<li>G1 - first period grade (numeric: from 0 to 20)</li>
+<li>G2 - second period grade (numeric: from 0 to 20)</li>
+<li>G3 - final grade (numeric: from 0 to 20, output target)</li>
+</ul></li>
+</ul>
+<p><a href="http://archive.ics.uci.edu/ml/datasets/Student+Performance">Student Dataset</a></p>
+<p>References:</p>
+<p>Citation Request: Please include this citation if you plan to use this database: P. Cortez and A. Silva. Using Data Mining to Predict Secondary School Student Performance. In A. Brito and J. Teixeira Eds., Proceedings of 5th FUture BUsiness TEChnology Conference (FUBUTEC 2008) pp. 5-12, Porto, Portugal, April, 2008, EUROSIS, ISBN 978-9077381-39-7. Available at: <a href="http://www3.dsi.uminho.pt/pcortez/student.pdf">http://www3.dsi.uminho.pt/pcortez/student.pdf</a></p>
+<p>Relevant Papers:</p>
+<p>P. Cortez and A. Silva. Using Data Mining to Predict Secondary School Student Performance. In A. Brito and J. Teixeira Eds., Proceedings of 5th FUture BUsiness TEChnology Conference (FUBUTEC 2008) pp. 5-12, Porto, Portugal, April, 2008, EUROSIS, ISBN 978-9077381-39-7. Available at: <a href="http://www3.dsi.uminho.pt/pcortez/student.pdf">http://www3.dsi.uminho.pt/pcortez/student.pdf</a></p>
+<p><a href="http://www3.dsi.uminho.pt/pcortez/Home.html">http://www3.dsi.uminho.pt/pcortez/Home.html</a></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
