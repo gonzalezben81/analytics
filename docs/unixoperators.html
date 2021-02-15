@@ -12,7 +12,7 @@
 <meta name="author" content="Ben" />
 
 
-<title>Regular Expressions in R</title>
+<title>Unix Operators Cheat Sheet</title>
 
 <script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -42,97 +42,6 @@
     </style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css" data-origin="pandoc">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  background-color: #f8f8f8; }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ef2929; } /* Alert */
-code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #c4a000; } /* Attribute */
-code span.bn { color: #0000cf; } /* BaseN */
-code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4e9a06; } /* Char */
-code span.cn { color: #000000; } /* Constant */
-code span.co { color: #8f5902; font-style: italic; } /* Comment */
-code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
-code span.dt { color: #204a87; } /* DataType */
-code span.dv { color: #0000cf; } /* DecVal */
-code span.er { color: #a40000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #0000cf; } /* Float */
-code span.fu { color: #000000; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
-code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
-code span.ot { color: #8f5902; } /* Other */
-code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
-code span.sc { color: #000000; } /* SpecialChar */
-code span.ss { color: #4e9a06; } /* SpecialString */
-code span.st { color: #4e9a06; } /* String */
-code span.va { color: #000000; } /* Variable */
-code span.vs { color: #4e9a06; } /* VerbatimString */
-code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
-
-</style>
-<script>
-// apply pandoc div.sourceCode style to pre.sourceCode instead
-(function() {
-  var sheets = document.styleSheets;
-  for (var i = 0; i < sheets.length; i++) {
-    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
-    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
-      var rule = rules[j];
-      // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
-      var style = rule.style.cssText;
-      // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
-      // replace div.sourceCode by a pre.sourceCode rule
-      sheets[i].deleteRule(j);
-      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
-    }
-  }
-})();
-</script>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 
 
 <style type="text/css">
@@ -601,9 +510,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Regular Expressions in R</h1>
+<h1 class="title toc-ignore">Unix Operators Cheat Sheet</h1>
 <h4 class="author">Ben</h4>
-<h4 class="date">2/6/2021</h4>
+<h4 class="date">2/14/2021</h4>
 
 </div>
 
@@ -612,52 +521,83 @@ div.tocify {
   addClassKlippyTo("pre.r, pre.sql, pre.bash, pre.python");
   addKlippy('right', 'top', '#0000FF', '1', 'Copy code', 'Code Copied!!!');
 </script>
-<div id="regular-expressions-regex-in-r" class="section level3">
-<h3>Regular Expressions (regex) in R</h3>
-<p>The following is a brief overview with examples you can use to learn regex in R. regex is a useful tool when you need to change text data or perform textual analysis.</p>
+<div id="file-type-operators" class="section level3">
+<h3>File Type Operators</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Operators</th>
+<th align="center">Tests For</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">-f</td>
+<td align="center">Regular File</td>
+</tr>
+<tr class="even">
+<td align="center">-d</td>
+<td align="center">Directory</td>
+</tr>
+<tr class="odd">
+<td align="center">-h</td>
+<td align="center">Symbolic link</td>
+</tr>
+<tr class="even">
+<td align="center">-b</td>
+<td align="center">Block device</td>
+</tr>
+<tr class="odd">
+<td align="center">-c</td>
+<td align="center">Character device</td>
+</tr>
+<tr class="even">
+<td align="center">-p</td>
+<td align="center">Named pipe</td>
+</tr>
+<tr class="odd">
+<td align="center">-S</td>
+<td align="center">Socket</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="using-grep-in-r" class="section level3">
-<h3>Using grep in R</h3>
-<p>Here we can locate where a pattern is located utilizing the <code>grep()</code> function.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span>(<span class="at">pattern =</span> <span class="st">&quot;are&quot;</span>,<span class="at">x =</span> <span class="st">&quot;hello how are you doing today&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] 1</code></pre>
-</div>
-<div id="using-grepl-in-r" class="section level3">
-<h3>Using grepl in R</h3>
-<p>Using <code>grepl()</code> we can check to see if the pattern exists in the text. <code>grepl()</code> returns a logical value either TRUE or FALSE.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grepl</span>(<span class="at">pattern =</span> <span class="st">&quot;are&quot;</span>,<span class="at">x =</span> <span class="fu">c</span>(<span class="st">&quot;are&quot;</span>,<span class="st">&quot;you&quot;</span>,<span class="st">&quot;there&quot;</span>,<span class="st">&quot;are&quot;</span>))</span></code></pre></div>
-<pre><code>## [1]  TRUE FALSE FALSE  TRUE</code></pre>
-</div>
-<div id="using-gsub-in-r" class="section level3">
-<h3>Using gsub in R</h3>
-<p>Using the <code>gsub()</code> function we can substitute words in text. <code>gsub()</code> will replace <strong>all</strong> of the matches in a string.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gsub</span>(<span class="at">pattern =</span> <span class="st">&quot;you&quot;</span>,<span class="at">x =</span> <span class="st">&quot;hello how are you doing today and who are you?&quot;</span>,<span class="at">replacement =</span> <span class="st">&quot;they&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;hello how are they doing today and who are they?&quot;</code></pre>
-</div>
-<div id="using-rexexpr-or-gregexpr-in-r" class="section level3">
-<h3>Using rexexpr or gregexpr in R</h3>
-<p>Utilizing <code>regexpr</code> we can find the position of the pattern match as well as the length of the patter match as well. This can come in hand with large text files that are not easily parsed by the human eye.</p>
-<p>We can also utilize <code>gregexpr()</code> as well to do the same thing.</p>
-<p>Both of these functions will retunr the exact same data.</p>
-<pre><code>## [1] 11
-## attr(,&quot;match.length&quot;)
-## [1] 3
-## attr(,&quot;index.type&quot;)
-## [1] &quot;chars&quot;
-## attr(,&quot;useBytes&quot;)
-## [1] TRUE</code></pre>
-<pre><code>## [[1]]
-## [1] 11
-## attr(,&quot;match.length&quot;)
-## [1] 3
-## attr(,&quot;index.type&quot;)
-## [1] &quot;chars&quot;
-## attr(,&quot;useBytes&quot;)
-## [1] TRUE</code></pre>
-</div>
-<div id="substituting-in-text-data-in-r" class="section level3">
-<h3>Substituting in text data in R</h3>
-<p>You can also utilize certain functions in R to substitute text data. Utilizing these features you can make corrections and find interesting insights into your data. The possibilities are endless if you allow your creativity to take place.</p>
+<div id="file-permissions-operators" class="section level3">
+<h3>File Permissions Operators</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Operator</th>
+<th align="center">Operator</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">-r</td>
+<td align="center">Readable</td>
+</tr>
+<tr class="even">
+<td align="center">-w</td>
+<td align="center">Writable</td>
+</tr>
+<tr class="odd">
+<td align="center">-x</td>
+<td align="center">Executable</td>
+</tr>
+<tr class="even">
+<td align="center">-u</td>
+<td align="center">Setuid</td>
+</tr>
+<tr class="odd">
+<td align="center">-g</td>
+<td align="center">Setgid</td>
+</tr>
+<tr class="even">
+<td align="center">-k</td>
+<td align="center">“Sticky”</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 
