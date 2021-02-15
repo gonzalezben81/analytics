@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css?family=Muli:400,400i,700&display=swap');
+ /*------------- Whole Document---------------- */
+
+/*----------------- links ---------------------*/
+
+a { 
+  color: #4e89bf;
+}
+  a:hover {
+    color: #396892; /* darker color when hovering */
+  }
+/*----------LOGO above TOC---------*/
+
+#TOC::before {
+  content: "";
+  display: block;
+  height: 80px;
+  margin: 20px 20px 40px 20px;
+  background-image: url("shiny.jpg");
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+/*------------Table of Contents (TOC)----------- */
+
+
+.tocify {
+  border: none;   /*Removes border */
+  border-radius: 0px; /* Gets rid of rounded corners on TOC */
+  font-size: 16px;
+}

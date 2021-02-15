@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+
+  <body>
+
+    <div id="chart" style="width:600px;height:400px;"></div>
+
+    <!--[if lt IE 9]><script src="js/excanvas.min.js"></script><![endif]-->
+    <script src="js/flotr2.min.js"></script>
+    <script>
+
+window.onload = function () {
+
+wins = [[0,13],[1,11],[2,15],[3,15],[4,18],[5,21],[6,28],[7,20],[8,25]];
+var years = [
+    [0, "2006"],
+    [1, "2007"],
+    [2, "2008"],
+    [3, "2009"],
+    [4, "2010"],
+    [5, "2011"],
+    [6, "2012"],
+    [7, "2013"],
+    [8, "2014"]
+];
+Flotr.draw(document.getElementById("chart"),[wins], {
+  title: "Manchester City Wins",
+  colors: ["lightgreen"],
+    bars: {
+        show: true,
+        barWidth: 0.5,
+        shadowSize: 0,
+        fillOpacity: 0.5,
+        lineWidth: 1,
+    },
+    yaxis: {
+        min: 0,
+        tickDecimals: 0,
+    },
+    xaxis: {
+        ticks: years,
+    },
+    grid: {
+        horizontalLines: true,
+        verticalLines: true,
+    }
+});
+
+};
+
+    </script>
+  </body>
+</html>

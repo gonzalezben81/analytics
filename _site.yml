@@ -1,0 +1,70 @@
+name: "Gonzalez Analytics"
+navbar:
+  title: "Gonzalez Analytics"
+  left:
+    - text: "Home"
+      href: index.html
+      icon: fa-home
+    - text: "RTutorials"
+      icon: fab fa-r-project
+      menu:
+        - text: "Regular Expressions in R"
+          href: rexpressions.html
+        - text: "Functions in R"
+          icon: far fa-file-code
+          href: functions.html
+    - text: "Graduate Work"
+      icon: fa-graduation-cap
+      menu:
+        - text: "Detroit Crime"
+          href: detroit.html
+        - text: "Student Performance"
+          href: student.html
+    - text: "Query Language"
+      icon: fa-database
+      menu:
+        - text: "PostgreSQL in R"
+          icon: fa-database
+          href: postgresqlr.html
+        - text: "MongoDB in R"
+          icon: fab fa-envira
+          href: mongor.html
+    - text: "Python"  
+      icon: fab fa-python
+      menu:
+        - text: "Python & R"
+          icon: fab fa-r-project
+          href: pythonr.html
+        - text: "MongoDB in Python"
+          icon: fab fa-envira
+          href: mongopython.html
+    - text: "Linux & Docker"
+      icon: fab fa-docker
+      menu:
+        - text: "Linux Operator Cheatsheet"
+          href: unixoperators.html
+          icon: fa fa-linux
+        - text: "Dockerfile AWS"
+          icon: fab fa-aws
+          href: dockerfileaws.html
+        - text: "Dockerized R-Shiny App"
+          href: dockershiny.html
+          icon: fab fa-r-project
+    - text: "R Packages"
+      icon: fas fa-box-open
+      menu:
+        - text: "Facebook R package"
+          href: facebookr.html
+        - text: "Routlier Package"
+          href: routlier.html
+#    - text: "About"
+#      href: about.html
+#      icon: fa-info
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    theme: cerulean
+    highlight: tango
+output_dir: docs
