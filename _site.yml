@@ -50,6 +50,9 @@ navbar:
         - text: "Dockerized R-Shiny App"
           href: dockershiny.html
           icon: fab fa-r-project
+        - text: "Dockerized Python Dash App"
+          href: pythondashone.html
+          icon: fab fa-python
     - text: "R Packages"
       icon: fas fa-box-open
       menu:
