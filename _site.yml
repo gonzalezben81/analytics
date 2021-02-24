@@ -65,6 +65,9 @@ navbar:
 #      icon: fa-info
 output:
   html_document:
+    includes:
+      in_header: "header.html"
+    css: "style.css"
     toc: true
     toc_float:
       collapsed: false
